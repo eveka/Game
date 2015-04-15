@@ -1,0 +1,54 @@
+//To avoid inherited properties, implemented class to enable idiosyncratic values among objects
+
+class myObject {
+  //PVector location; 
+  float x, y;
+  PImage img;
+  float dx, dy;
+  boolean hova;
+String myName;  
+  int diam;
+  
+  myObject(PImage _img, float _x, float _y, int _diam, float _dx, float _dy, String _myName) {
+    x = _x;
+    y = _y;
+    diam = _diam;
+    dx = _dx;
+    dy = _dy;
+    img = _img;
+myName = _myName;  
+}
+
+
+  void update() {
+    x = x + dx;
+    y = y + dy;
+    if (((y+.5*diam) > height) || ((y+.5*diam) < 0) ) {
+      dy = -dy;
+    }
+    if (((x+.5*diam) > width) || ((x+.5*diam) < 0) ) {
+      dx = -dx;
+    }
+
+if (m>30) {
+  dx = dx++;
+  dy = dy++;
+}
+ 
+    theDist = dist(x, y, location1.x, location1.y);
+    if (theDist < (size2/2 + size1/2)) {
+      count--;
+      image(boom, 150, 40);
+      dy=-dy;
+      dx=-dx;
+}
+}
+
+ 
+  void display() {
+    fill(250);
+    image(img, x, y, size2, size2);
+  }
+
+
+}
