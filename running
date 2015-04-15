@@ -1,0 +1,146 @@
+myObject[] objs = new myObject[6];
+
+
+float dx1, dy1, grav;
+float a, b;
+int size1, sizey1, size2 = 65, size3 = 175, count = 3, counter;
+PImage ty, boom, tyty, lob;
+PImage tyler, catimg, burgerimg, jbimg, lettuceimg;
+PVector location1;
+float theDist;
+int m;
+int diam = 75;
+
+//state machine
+boolean showInstructions = true;
+boolean playing = false;
+boolean ended = false;
+
+void setup() {
+  background(#FAABED);
+  size(800, 600);
+
+  //defining properties of various objects within the class myObject's array
+  objs[0] = new myObject(loadImage("cat.png"), 50, 80, diam, 3, 5, "cat" );
+  objs[1] = new myObject(loadImage("jb.png"), 70, 80, diam, 6, 7, "jb" );
+  objs[2] = new myObject(loadImage("burger.png"), 90, 80, diam, 3, 8, "burger" );
+  objs[3] = new myObject(loadImage("lettuce.png"), 200, 90, diam, 4.5, 4, "lettuce");
+  objs[4] = new myObject(loadImage("donut.png"), 800, 100, diam, 3.2, 3.7, "donut") ; 
+  objs[5] = new myObject(loadImage("ty-bird.png"), 350, 250, diam, 2, 2, "tyty");
+
+  //setting values
+  ty = loadImage("Tyler face center.png");
+  boom = loadImage("boom.png");
+  tyty = loadImage("ty-bird.png");
+  lob = loadImage("lobsta.png");
+  location1 = new PVector(350, 250);
+  size1 = 80;
+  sizey1 = 100;
+  a = 100;
+  b = 100;
+  dx1 = 4;
+  dy1 = 9;
+  grav = .9;
+  m = millis();
+}
+
+
+void draw() {
+  if (showInstructions) {
+    background(#FAABED);
+    println("show");
+    //initial screen, instructions and introduction 
+    textSize(30);
+    text("keep objects away from tyler's face!", 130, 100);
+    text("click objects with lobster to protect him", 105, 150);
+    text("press s to start", 310, 500);
+    image(ty, 350, 250);
+  } else if (playing) {
+    background(#FAABED);
+    image(ty, location1.x, location1.y);
+
+    //lobster shield
+    cursor(lob);
+    lob.resize(120, 120);
+
+    //health tracker
+    text(count, 30, 30);
+
+    //score keeper
+    m = counter++;
+    text(counter, 700, 40);
+
+
+    //implementing class into live game
+    for (int i = 0; i < 5; i++) {
+      objs[i].update();
+      objs[i].display();
+    }
+    if (count <= 0 ) {
+      playing  = false;
+      ended = true;
+    }
+  } else if (ended) {
+
+    //develop losing scenario 
+    playing = false;
+    background(#FAABED);
+    text("fin.", 400, 550); 
+    image(ty, 350, 250);
+    text("winning capabilities = " + m, 350, 40);
+
+    //restart button properties
+    image(tyty, a, b);
+    tyty.resize(150, 150);
+    a =  a + dx1;
+    b = b + dy1;
+    dy1 =  dy1 + grav;
+
+    //buttons restraints
+    if (a > (width+diam)) {
+      a = 0-diam;
+    }
+    if (a < (0-diam)) {
+      dx1 = -dx1;
+    }
+    if  ((b > (height-diam)) ||(b < (0+diam))) {
+      dy1 = -dy1+grav;
+    }
+    //click function
+    if (dist(mouseX, mouseY, a, b) < 50) {
+      background(#FAABED);
+      counter = 0;
+      count = 3;
+      ended = false;
+      showInstructions = true;
+    }
+
+    //end-game instructions
+    text("catch tyBird to start again loser", 185, 100);
+  }
+}
+
+
+
+
+void mousePressed() {
+
+  //game's challenge
+  for (int i = 0; i < objs.length; i++) {
+    if (mouseX >= objs[i].x - size2 && mouseX <= objs[i].x+size2 && mouseY >= objs[i].y-size2 && mouseY <= objs[i].y + size2) {
+      objs[i].dx *= -1;
+      objs[i].dy *= -1;
+    }
+  }
+}
+
+
+
+void keyPressed() {
+  if (key == 's' || key == 'S') {
+    println("s is pressed");
+
+    showInstructions = false;
+    playing = true;
+  }
+}
